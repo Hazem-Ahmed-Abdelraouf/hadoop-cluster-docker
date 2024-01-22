@@ -1,11 +1,14 @@
 FROM ubuntu:14.04
 
-MAINTAINER KiwenLau <kiwenlau@gmail.com>
 
 WORKDIR /root
 
 # install openssh-server, openjdk and wget
-RUN apt-get update && apt-get install -y openssh-server openjdk-7-jdk wget
+# RUN apt-get update && apt-get install -y openssh-server openjdk-7-jdk wget 
+RUN apt-get update && apt-get install -y openssh-server openjdk-7-jdk wget python3-pip
+
+# installing important py libraries
+RUN  pip3 install mrjob numpy==1.16.0
 
 # install hadoop 2.7.2
 RUN wget https://github.com/kiwenlau/compile-hadoop/releases/download/2.7.2/hadoop-2.7.2.tar.gz && \
@@ -27,6 +30,9 @@ RUN mkdir -p ~/hdfs/namenode && \
     mkdir $HADOOP_HOME/logs
 
 COPY config/* /tmp/
+
+# copying proj needed folder to /root work dir
+COPY ./proj-files/ /root/
 
 RUN mv /tmp/ssh_config ~/.ssh/config && \
     mv /tmp/hadoop-env.sh /usr/local/hadoop/etc/hadoop/hadoop-env.sh && \
